@@ -1,9 +1,10 @@
 // TODO: Include packages needed for this application
 const inquirer = require('inquirer');
 const fs = require('fs');
+const path = require('path')
+const generateMarkdown = require('./utils/generateMarkdown')
 
-inquirer 
-   .prompt([
+const questions = [
     {
         type: 'input',
         message: 'What is the title of the project?',
@@ -11,7 +12,7 @@ inquirer
     },
     {
         type: 'input',
-        message: 'Provide a brrief decription on your project:',
+        message: 'Provide a brief decription on your project:',
         name: 'description',
     },
     {
@@ -36,10 +37,10 @@ inquirer
         choices: ['HTML', 'JS', 'CSS', 'Bootstrap', 'node.js'],
     },
     {
-        type: 'input',
+        type: 'list',
         message: 'What are all licence that you used for your project?',
         name: 'license',
-        choices: ['MIT', '', '','']
+        choices: ['MIT', 'MPL2.0', 'APACHE2.0','none']
     },
     {
         type: 'input',
@@ -48,15 +49,27 @@ inquirer
     },
     
 
-])
+];
+function writeToFile(fileName, data){
+    return fs.writeFileSync(path.join(process.cwd(), fileName), data);
 
-.then((answer) => {
-    connsole.log(answer);
-    fs.writeFile('Readne.md', answer, (err) => {
-        err ? console.log(err) :
-         console.log('success');
+}
+function init() {
+    inquirer.prompt(questions).then((answers) => {
+        console.log ("Readme.md file created");
+        writeToFile ("./utils/Readme.md", generateMarkdown({answers}));
     });
-});
+}
+init();
+
+// .then((answers) => {
+//     const readmeContent  = generateReadme(answers)
+//     fs.writeFile('Readme.md', readmeContent, (err) => {
+//         err ? console.log(err) :
+//          console.log('success');
+//     });
+// });
+
 // // TODO: Create an array of questions for user input
 // const questions = [];
 
